@@ -20,7 +20,7 @@ default:
 	$(MAKE) -C $(KDIR) M=$(PWD) modules
 
 install:
-	cp uio_ivshmem.ko /lib/modules/$(shell uname -r)/kernel/drivers/uio/
+	cp ivshmem_uio.ko /lib/modules/$(shell uname -r)/kernel/drivers/uio/uio_ivshmem.ko
 
 clean:
 	rm -f *.ko *.o ivshmem_uio.mod.c Module.symvers
