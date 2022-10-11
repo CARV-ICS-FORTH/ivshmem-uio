@@ -1,6 +1,8 @@
 /*
  * UIO IVShmem Driver
  *
+ * (C) 2022 Antony Chazapis, FORTH-ICS
+ * (C) 2018 Shawn Anastasio
  * (C) 2009 Cam Macdonell
  * based on Hilscher CIF card driver (C) 2007 Hans J. Koch <hjk@linutronix.de>
  *
@@ -162,8 +164,9 @@ static int ivshmem_pci_probe(struct pci_dev *dev,
 	if (!info->mem[1].addr)
 		goto out_unmap;
 
-    info->mem[1].internal_addr = ioremap_cache(pci_resource_start(dev, 2),
-				     pci_resource_len(dev, 2));
+    info->mem[1].internal_addr = memremap(pci_resource_start(dev, 2),
+				     pci_resource_len(dev, 2),
+				     MEMREMAP_WB);
 	if (!info->mem[1].internal_addr)
 		goto out_unmap;
 
@@ -201,9 +204,9 @@ static int ivshmem_pci_probe(struct pci_dev *dev,
 
 	return 0;
 out_unmap2:
-	iounmap(info->mem[2].internal_addr);
+	memunmap(info->mem[2].internal_addr);
 out_unmap:
-	iounmap(info->mem[0].internal_addr);
+	memunmap(info->mem[0].internal_addr);
 out_release:
 	pci_release_regions(dev);
 out_disable:
@@ -220,7 +223,7 @@ static void ivshmem_pci_remove(struct pci_dev *dev)
 	uio_unregister_device(info);
 	pci_release_regions(dev);
 	pci_disable_device(dev);
-	iounmap(info->mem[0].internal_addr);
+	memunmap(info->mem[0].internal_addr);
 
 	kfree (info);
 }
