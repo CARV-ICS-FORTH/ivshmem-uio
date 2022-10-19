@@ -166,7 +166,7 @@ static int ivshmem_pci_probe(struct pci_dev *dev,
 
     info->mem[1].internal_addr = memremap(pci_resource_start(dev, 2),
 				     pci_resource_len(dev, 2),
-				     MEMREMAP_WB);
+				     MEMREMAP_WT);
 	if (!info->mem[1].internal_addr)
 		goto out_unmap;
 
